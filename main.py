@@ -3,11 +3,12 @@ import re
 from tweepy.streaming import StreamListener
 from tweepy import OAuthHandler
 from tweepy import Stream
+import sys
 
-access_token = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
-access_token_secret = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
-consumer_key = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
-consumer_secret = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+access_token = sys.argv[1]
+access_token_secret = sys.argv[2]
+consumer_key = sys.argv[3]
+consumer_secret = sys.argv[4]
 
 
 class StdOutListener(StreamListener):
@@ -26,11 +27,12 @@ if __name__ == '__main__':
     stream = Stream(auth, l)
 
     stream.filter(track=[
+     "#MagicBand",
+     "#VisitPandora",
+     "VisitPandora",
+     "WaltDisneyWorld",
+     "visitpandora",
      "#Disneyland",
-     "#universalstudios",
-     "#universalstudiosFlorida",
-     "#UniversalStudiosFlorida",
-     "#universalstudioslorida",
      "#magickingdom",
      "#Epcot",
      "#EPCOT",
@@ -40,16 +42,8 @@ if __name__ == '__main__':
      "#disneyworld",
      "#DisneyWorld",
      "Disney's Hollywood Studios",
-     "#Efteling",
-     "#efteling",
-     "De Efteling",
-     "Universal Studios Japan",
      "#WDW",
-     "#dubaiparksandresorts",
-     "#harrypotterworld",
      "#disneyland",
-     "#UniversalStudios",
      "#waltdisneyworld",
      "#disneylandparis",
-     "#tokyodisneyland",
-     "#themepark"])
+     "#tokyodisneyland"])
