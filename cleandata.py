@@ -2,14 +2,23 @@ from textblob import TextBlob
 import re
 import json
 import numpy
+from nltk.corpus import stopwords
+import string
+
+# will be removed from tweets
+punctuation = list(string.punctuation)
+stoplist =  punctuation + ['rt', 'via']
 
 def clean_tweet(line):
         '''
         Utility function to clean tweet text by removing links, special characters.
         '''
         line = removeLink(line)
-        line = line.replace('@', '')
-        line = line.replace('#', '')
+        line = line.lower()
+
+        for word in stoplist:
+            line = line.replace(word,'') #needed for textblob
+
         return line
 
 def get_tweet_sentiment(tweet):
