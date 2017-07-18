@@ -19,7 +19,7 @@ def get_tweet_sentiment(tweet):
     '''
     # create TextBlob object of passed tweet text
     analysis = TextBlob(tweet)
-#    print(analysis.raw)
+
     # set sentiment
     if analysis.sentiment.polarity > 0:
         return 'positive'
@@ -47,22 +47,6 @@ def removeLink(line):
     else:
         return line
 
-def get_text(line):
-    """json loads fails for many tweets this hack is ugly but doesn't loose data"""
-    line = line.replace(r'\r','\n')
-    try:
-        line = json.loads(line) # data loss
-        line = line['text']
-    except:
-        #print(line)
-        first = ',"text":'
-        #last = ',"source":'
-        last = '","'
-        line = find_between(line.replace("('negative', '  tweet:'", ''), first, last)
-
-    #line = clean_tweet(line)
-    return line
-
 
 def find_between( s, first, last ):
     try:
@@ -72,24 +56,39 @@ def find_between( s, first, last ):
     except ValueError:
         return ""
 
-fil = open('log', 'r')
-
-print("")
+fil = open('log', 'r') # read raw tweet data from log
+outfil = open('tweetdata','w') # dump clean data to tweetdata for analysis
+outfil.write('date~,~tweet~,~sentiment\n')
 for line in fil.readlines():
 
+    # skip if line is empty
     if line == '' or line == ' ':
         continue
 
-    line = get_text(line)
-    line = clean_tweet(line)
+    line = line.replace(r'\r','\n')
 
-    if line == '' or line == ' ':
+    # try to load data as a dict
+    try:
+        line = json.loads(line)
+    except:
+        continue
+
+    # keep timestamp
+    time = line['created_at']
+
+    # get clean tweet
+    text = clean_tweet(line['text'])
+
+    if text == '' or text == ' ':
         continue
 
     #if (not 'pandora' in line )or (not 'Pandora' in line):
     #    continue
 
-    sentiment = get_tweet_sentiment(line)
-    print(line,sentiment)
+    sentiment = get_tweet_sentiment(text)
 
-print("")
+    # write to file
+    outfil.write("{}~,~{}~,~{}\n".format(time, text, sentiment))
+
+outfil.close()
+fil.close()
